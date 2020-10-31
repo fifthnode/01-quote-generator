@@ -7,24 +7,23 @@ const loader = document.getElementById('loader');
 
 let apiQuotes = [];
 
-// Show loading
-function loading() {
+function showLoadingSpinner() {
   loader.hidden = false;
   quoteContainer.hidden = true;
 }
 
-// Hide loading
-function complete() {
-  loader.hidden = true;
-  quoteContainer.hidden = false;
+function hideLoadingSpinner() {
+  if (!loader.hidden) {
+    loader.hidden = true;
+    quoteContainer.hidden = false;
+  }
 }
 
 // Show new quote
 function newQuote() {
-  loading();
+  showLoadingSpinner();
   // Pick a random quote from apiQuotes array
   const quote = apiQuotes[Math.floor(Math.random() * apiQuotes.length)];
-  // console.log(quote);
   // Check if Author field is blank and replace it with 'Unknown'
   if (!quote.author){
     authorText.textContent = 'Unknown';
@@ -39,12 +38,12 @@ function newQuote() {
   }
   // Set quote, hide loader
   quoteText.textContent = quote.text;
-  complete();
+  hideLoadingSpinner();
 }
 
 // Get quote from API
 async function getQuotes() {
-  loading();
+  showLoadingSpinner();
   const proxyUrl = 'https://fathomless-anchorage-31149.herokuapp.com/';
   const apiUrl = 'https://type.fit/api/quotes';
   try {
@@ -53,14 +52,15 @@ async function getQuotes() {
     newQuote();
   } catch (error) {
     // Catch error here
-    // getQuotes();
     // console.log('whoops, no quote', error);
   }
 }
 
 // Tweet quote
 function tweetQuote() {
-  const twitterUrl = `https://twitter.com/intent/tweet?text=${quoteText.textContent} - ${authorText.textContent}`;
+  const quote = quoteText.textContent;
+  const author = authorText.textContent;
+  const twitterUrl = `https://twitter.com/intent/tweet?text=${quote} - ${author}`;
   window.open(twitterUrl, '_blank');
 }
 
